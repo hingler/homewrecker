@@ -1,0 +1,22 @@
+{
+  "name": "homewrecker",
+  "version": "0.0.1",
+  "description": "house generator",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "npm run build-ts",
+    "build": "tsc -p tsconfig-dev.json",
+    "build-ts": "tsc -p tsconfig.json --declaration",
+    "test": "mocha ts-out/test/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jamieboy1337/homewrecker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jamieboy1337/homewrecker/issues"
+  },
+  "homepage": "https://github.com/jamieboy1337/homewrecker#readme"
+}

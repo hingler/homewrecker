@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "outDir": ".",
+    "module": "CommonJS",
+    "target": "ES2015",
+    "baseUrl": ".",
+  },
+
+  "include": [
+    "./ts/**/*"
+  ],
+  
+  "exclude": [
+    "./test/**/*",
+    "./wasm/**/*"
+  ]
+}

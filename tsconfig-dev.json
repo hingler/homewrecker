@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "outDir": "./ts-out",
+    "module": "CommonJS",
+    "target": "ES2015",
+    "baseUrl": ".",
+  },
+
+  "include": [
+    "./test/**/*",
+    "./ts/**/*"
+  ],
+  
+  "exclude": [
+    "./wasm/**/*"
+  ]
+}
