@@ -18,5 +18,9 @@
   "bugs": {
     "url": "https://github.com/jamieboy1337/homewrecker/issues"
   },
-  "homepage": "https://github.com/jamieboy1337/homewrecker#readme"
+  "homepage": "https://github.com/jamieboy1337/homewrecker#readme",
+  "dependencies": {
+    "gl-matrix": "^3.4.3",
+    "nekogirl-valhalla": "github:jamieboy1337/nekogirl-valhalla"
+  }
 }
