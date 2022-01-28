@@ -1,4 +1,4 @@
-import { vec2, vec3 } from "gl-matrix";
+import { vec3 } from "gl-matrix";
 import { Segment } from "ts/segment/Segment";
 import { RoofPolyData } from "./RoofPolyData";
 
@@ -86,6 +86,8 @@ export class RoofPositionGenerator {
 
           vec3.sub(temp, temp, temp2);
           vec3.sub(temp, temp2, temp);
+          // flips on Y -- unflip
+          temp[1] = -temp[1];
           res.shortStart.push(...temp);
         }
       }

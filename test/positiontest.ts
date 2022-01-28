@@ -63,6 +63,23 @@ describe("RoofPositionGenerator", function() {
     }
   });
 
+  it("Should respect direction of height", function() {
+    const testSegment : Segment = {
+      start: [0, 0],
+      end: [15, 15],
+      flat: false, 
+      startJoin: false
+    };
+
+    const posData = RoofPositionGenerator.generateRoofPositions(testSegment, 3, 5);
+    const pos = [posData.longMinus, posData.longPlus, posData.shortStart, posData.shortEnd];
+    for (let data of pos) {
+      for (let i = 1; i < data.length; i += 3) {
+        expect(data[i]).to.be.greaterThanOrEqual(0);
+      }
+    }
+  });
+
   it("Should obey our extrusion requirements", function() {
     // every point on every poly should either be on a point, (extrude) away from a point, or (sqrt(2) * extrude) away
     const testSegment : Segment = {
