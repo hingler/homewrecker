@@ -35,9 +35,7 @@ class TexcoordBlock {
   }
 
   getBoundingBoxDimensions() : [number, number] {
-    let maxWidth = ((this.includeTri ? 3 : 1) * this.extrude + this.lenShort + BLOCK_TRI_OFFSET);
-    // suboptimal win our limited box -- fix once its working
-    maxWidth = Math.max(maxWidth, this.lenLong + this.offsetLong + BLOCK_TRI_OFFSET);
+    let maxWidth = ((this.includeTri ? 2 : 0) * this.extrude + this.offsetLong + this.lenLong + BLOCK_TRI_OFFSET);
     const maxHeight = this.texHeight;
 
     return [maxWidth * this.scale, maxHeight * this.scale];
@@ -51,13 +49,17 @@ class TexcoordBlock {
     res.push(this.extrude + this.lenShort + this.texOffset[0], this.texOffset[1]);
 
     if (this.includeTri) {
-      res.push(this.offsetLong + this.lenLong + BLOCK_TRI_OFFSET + this.texOffset[0], this.texOffset[1]);
-      res.push(this.extrude + this.lenShort + BLOCK_TRI_OFFSET + this.texOffset[0], this.texHeight + this.texOffset[1]);
-      res.push(this.extrude + this.lenShort + BLOCK_TRI_OFFSET + 2 * this.extrude + this.texOffset[0], this.texHeight + this.texOffset[1]);
+      res.push(this.offsetLong + this.lenLong + BLOCK_TRI_OFFSET + this.texOffset[0] + this.extrude,     this.texOffset[1]);
+      res.push(this.offsetLong + this.lenLong + BLOCK_TRI_OFFSET + this.texOffset[0],                    this.texHeight + this.texOffset[1]);
+      res.push(this.offsetLong + this.lenLong + BLOCK_TRI_OFFSET + this.texOffset[0] + 2 * this.extrude, this.texHeight + this.texOffset[1]);
     }
 
     for (let i = 0; i < res.length; i++) {
       res[i] *= this.scale;
+      if (i % 2) {
+        // flip back to texcoord 00 TL, 11 BR
+        res[i] = 1.0 - res[i];
+      }
     }
 
     return res;

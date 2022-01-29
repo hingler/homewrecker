@@ -3,9 +3,6 @@ import { vec2, vec3 } from "gl-matrix";
 import { RoofPositionGenerator } from "../ts/model/internal/RoofPositionGenerator";
 import { RoofTexcoordGenerator } from "../ts/model/internal/RoofTexcoordGenerator";
 import { Segment } from "../ts/segment/Segment";
-// texcoords should be bounded in the range (0, 1) by default
-// position should consistently map to texture space
-//   how about: lengths in texture space should scale linearly to lengths in position space
 
 describe("RoofTexcoordGenerator", function() {
   it("Should return appropriate amount of data", function() {
