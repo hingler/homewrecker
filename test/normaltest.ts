@@ -30,6 +30,7 @@ describe("RoofNormalGenerator", function() {
       startJoin: false
     };
     for (let g = 0.5; g < 15; g += 0.5) {
+      testSegment.end[1] = g;
       const posData = RoofPositionGenerator.generateRoofPositions(testSegment, g, 3);
       const normData = RoofNormalGenerator.generateRoofNormals(testSegment, g, 3);
   
@@ -59,4 +60,25 @@ describe("RoofNormalGenerator", function() {
       }
     }
   });
+
+  it("Returns normalized normals", function() {
+    const testSegment : Segment = {
+      start: [0, 0],
+      end: [10, 0],
+      flat: false,
+      startJoin: false
+    };
+
+    for (let g = 0.5; g < 15; g += 0.5) {
+      const normData = RoofNormalGenerator.generateRoofNormals(testSegment, g, 3);
+  
+      const norm = [normData.longMinus, normData.longPlus, normData.shortStart, normData.shortEnd];
+      for (let h = 0; h < 4; h++) {
+        for (let i = 0; i < norm[h].length; i += 3) {
+          const v : vec3 = [norm[h][i], norm[h][i + 1], norm[h][i + 2]];
+          expect(vec3.length(v)).to.approximately(1.0, 0.0001);
+        }
+      }
+    }
+  })
 });

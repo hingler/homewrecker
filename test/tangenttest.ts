@@ -64,4 +64,25 @@ describe("RoofTangentGenerator", function() {
       }
     }
   });
+
+  it("Should return normalized tangents", function() {
+    const testSegment : Segment = {
+      start: [0, 0],
+      end: [10, 0],
+      flat: false,
+      startJoin: false
+    };
+
+    for (let g = 0.5; g < 15; g += 0.5) {
+      const tanData = RoofTangentGenerator.generateRoofTangents(testSegment, g, 3);
+  
+      const tan = [tanData.longMinus, tanData.longPlus, tanData.shortStart, tanData.shortEnd];
+      for (let h = 0; h < 4; h++) {
+        for (let i = 0; i < tan[h].length; i += 3) {
+          const v : vec3 = [tan[h][i], tan[h][i + 1], tan[h][i + 2]];
+          expect(vec3.length(v)).to.approximately(1.0, 0.0001);
+        }
+      }
+    }
+  })
 })
