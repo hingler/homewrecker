@@ -1,5 +1,5 @@
 import { vec2, vec3 } from "gl-matrix";
-import { Segment } from "ts/segment/Segment";
+import { Segment } from "../../segment/Segment";
 import { RoofPolyData } from "./RoofPolyData";
 
 export class RoofNormalGenerator {

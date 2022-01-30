@@ -1,12 +1,12 @@
 import { vec2, vec3 } from "gl-matrix";
-import { Segment } from "ts/segment/Segment";
+import { Segment } from "../segment/Segment";
 import { RoofNormalGenerator } from "./internal/RoofNormalGenerator";
 import { RoofPolyData } from "./internal/RoofPolyData";
 import { RoofPositionGenerator } from "./internal/RoofPositionGenerator";
 import { RoofTangentGenerator } from "./internal/RoofTangentGenerator";
 import { RoofTexcoordGenerator } from "./internal/RoofTexcoordGenerator";
 import { ReadWriteBuffer } from "nekogirl-valhalla/buffer/ReadWriteBuffer";
-import { BufferData } from "./internal/BufferData";
+import { RoofBufferData } from "./internal/RoofBufferData";
 
 const PROPERTY_LIST = ["longMinus", "longPlus", "shortEnd", "shortStart"];
 
@@ -97,9 +97,13 @@ export class RoofGenerator {
         index += 3;
       }
     }
-    return {
-      geometry: res,
-      index: resIndex
-    } as BufferData;
+    const dataRes = new RoofBufferData();
+    dataRes.geometry = res;
+    dataRes.index = resIndex;
+
+    dataRes.vertices = Math.round(offset / 44);
+    dataRes.indices = Math.round(indexOffset / 2);
+
+    return dataRes;
   }
 }

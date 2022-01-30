@@ -1,5 +1,5 @@
 import { vec2 } from "gl-matrix";
-import { Segment } from "ts/segment/Segment";
+import { Segment } from "../../segment/Segment";
 import { RoofPolyData } from "./RoofPolyData";
 
 const BLOCK_TRI_OFFSET = 0.5;
