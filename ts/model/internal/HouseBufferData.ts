@@ -1,6 +1,6 @@
 import { ReadWriteBuffer } from "nekogirl-valhalla/buffer/ReadWriteBuffer";
 
-export class RoofBufferData {
+export class HouseBufferData {
   geometry: ReadWriteBuffer;
   index: ReadWriteBuffer;
 

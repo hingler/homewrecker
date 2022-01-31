@@ -6,7 +6,7 @@ import { RoofPositionGenerator } from "./internal/RoofPositionGenerator";
 import { RoofTangentGenerator } from "./internal/RoofTangentGenerator";
 import { RoofTexcoordGenerator } from "./internal/RoofTexcoordGenerator";
 import { ReadWriteBuffer } from "nekogirl-valhalla/buffer/ReadWriteBuffer";
-import { RoofBufferData } from "./internal/RoofBufferData";
+import { HouseBufferData } from "./internal/HouseBufferData";
 
 const PROPERTY_LIST = ["longMinus", "longPlus", "shortEnd", "shortStart"];
 
@@ -26,7 +26,7 @@ export class RoofGenerator {
    *          index data:
    *            unsigned short components.
    */
-  static generateRoof(segmentList: Array<Segment>, height: number, extrude: number) {
+  static generateRoof(segmentList: Array<Segment>, height: number, extrude: number, yOffset: number) {
     // todo: add depth param
     const res = new ReadWriteBuffer();
     const resIndex = new ReadWriteBuffer();
@@ -45,9 +45,15 @@ export class RoofGenerator {
         const normData = normals[property] as Array<number>;
         const texcoordData = texcoords[property] as Array<number>;
         const tangentData = tangents[property] as Array<number>;
+        if (posData === null || normData === null || texcoordData === null || tangentData === null) {
+          // oops lol
+          continue;
+        }
+
         for (let i = 0; i < Math.floor(posData.length / 3); i++) {
           for (let j = 0; j < 3; j++) {
-            res.setFloat32(offset, posData[3 * i + j], true);
+            // todo: a bit hacky
+            res.setFloat32(offset, posData[3 * i + j] + (j === 1 ? yOffset : 0), true);
             offset += 4; 
           }
 
@@ -97,7 +103,7 @@ export class RoofGenerator {
         index += 3;
       }
     }
-    const dataRes = new RoofBufferData();
+    const dataRes = new HouseBufferData();
     dataRes.geometry = res;
     dataRes.index = resIndex;
 

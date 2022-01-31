@@ -1,5 +1,6 @@
 import { vec3 } from "gl-matrix";
 import { Segment } from "../../segment/Segment";
+import { generateDirNorm } from "./generateDirNorm";
 import { RoofPolyData } from "./RoofPolyData";
 
 export class RoofPositionGenerator {
@@ -11,13 +12,7 @@ export class RoofPositionGenerator {
    * @returns a list of unindexed tri positions which will build the model.
    */
   static generateRoofPositions(segment: Segment, height: number, extrude: number) : RoofPolyData {
-    const startRef = vec3.fromValues(segment.start[0], 0.0, segment.start[1]);
-    const endRef = vec3.fromValues(segment.end[0], 0.0, segment.end[1]);
-    const dir = vec3.subtract(vec3.create(), endRef, startRef);
-    vec3.normalize(dir, dir);
-
-    const norm = vec3.cross(vec3.create(), dir, [0, 1, 0]);
-    vec3.normalize(norm, norm);
+    const {startRef, endRef, dir, norm} = generateDirNorm(segment);
 
     const temp = vec3.create();
     const temp2 = vec3.create();

@@ -11,7 +11,7 @@ describe("RoofGenerator", function() {
       startJoin: false
     };
 
-    const roof = RoofGenerator.generateRoof([testSegment], 5, 5);
+    const roof = RoofGenerator.generateRoof([testSegment], 5, 5, 0);
     // should have 14 vertices and 18 indices
     expect(roof.geometry).to.not.be.undefined;
     expect(roof.index).to.not.be.undefined;
