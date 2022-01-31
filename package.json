@@ -7,7 +7,7 @@
     "prepare": "npm run build-ts",
     "build": "tsc -p tsconfig-dev.json",
     "build-ts": "tsc -p tsconfig.json --declaration",
-    "test": "mocha ts-out/test/*"
+    "test": "mocha ts-out/homewrecker/test/*"
   },
   "repository": {
     "type": "git",

@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { vec3 } from "gl-matrix";
-import { RoofNormalGenerator } from "../ts/model/internal/RoofNormalGenerator";
-import { RoofTangentGenerator } from "../ts/model/internal/RoofTangentGenerator";
+import { RoofNormalGenerator } from "../ts/model/internal/roof/RoofNormalGenerator";
+import { RoofTangentGenerator } from "../ts/model/internal/roof/RoofTangentGenerator";
 import { Segment } from "../ts/segment/Segment";
 
 

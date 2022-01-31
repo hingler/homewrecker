@@ -1,7 +1,7 @@
 import { vec3 } from "gl-matrix";
-import { Segment } from "../../segment/Segment";
-import { generateDirNorm } from "./generateDirNorm";
-import { RoofPolyData } from "./RoofPolyData";
+import { Segment } from "../../../segment/Segment";
+import { generateDirNorm } from "../generateDirNorm";
+import { RoofPolyData } from "../RoofPolyData";
 
 export class RoofPositionGenerator {
   /**

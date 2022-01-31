@@ -1,6 +1,6 @@
 import { vec3 } from "gl-matrix";
-import { Segment } from "../../segment/Segment";
-import { RoofPolyData } from "./RoofPolyData";
+import { Segment } from "../../../segment/Segment";
+import { RoofPolyData } from "../RoofPolyData";
 
 export class RoofTangentGenerator {
   static generateRoofTangents(segment: Segment, height: number, extrude: number) : RoofPolyData {

@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { vec2, vec3 } from "gl-matrix";
-import { RoofPositionGenerator } from "../ts/model/internal/RoofPositionGenerator";
+import { RoofPositionGenerator } from "../ts/model/internal/roof/RoofPositionGenerator";
 import { Segment } from "../ts/segment/Segment";
 
 function getMinDistance(data: Segment, point: vec2) {

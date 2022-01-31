@@ -3,6 +3,17 @@ import { RoofGenerator } from "../ts/model/RoofGenerator";
 import { Segment } from "../ts/segment/Segment";
 
 describe("RoofGenerator", function() {
+  it("Doesn't crash when face is missing", function() {
+    const testSegment : Segment = {
+      start: [0, 0],
+      end: [10, 0],
+      flat: false,
+      startJoin: true
+    };
+
+    RoofGenerator.generateRoof([testSegment], 0.5, 0.5, 0.0);
+  });
+  
   it("Has the length we would expect", function() {
     const testSegment : Segment = {
       start: [0, 0],

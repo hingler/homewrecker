@@ -1,10 +1,9 @@
 import { vec2, vec3 } from "gl-matrix";
 import { Segment } from "../segment/Segment";
-import { RoofNormalGenerator } from "./internal/RoofNormalGenerator";
-import { RoofPolyData } from "./internal/RoofPolyData";
-import { RoofPositionGenerator } from "./internal/RoofPositionGenerator";
-import { RoofTangentGenerator } from "./internal/RoofTangentGenerator";
-import { RoofTexcoordGenerator } from "./internal/RoofTexcoordGenerator";
+import { RoofNormalGenerator } from "./internal/roof/RoofNormalGenerator";
+import { RoofPositionGenerator } from "./internal/roof/RoofPositionGenerator";
+import { RoofTangentGenerator } from "./internal/roof/RoofTangentGenerator";
+import { RoofTexcoordGenerator } from "./internal/roof/RoofTexcoordGenerator";
 import { ReadWriteBuffer } from "nekogirl-valhalla/buffer/ReadWriteBuffer";
 import { HouseBufferData } from "./internal/HouseBufferData";
 

@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { vec2, vec3 } from "gl-matrix";
-import { RoofPositionGenerator } from "../ts/model/internal/RoofPositionGenerator";
-import { RoofTexcoordGenerator } from "../ts/model/internal/RoofTexcoordGenerator";
+import { RoofPositionGenerator } from "../ts/model/internal/roof/RoofPositionGenerator";
+import { RoofTexcoordGenerator } from "../ts/model/internal/roof/RoofTexcoordGenerator";
 import { Segment } from "../ts/segment/Segment";
 
 describe("RoofTexcoordGenerator", function() {
