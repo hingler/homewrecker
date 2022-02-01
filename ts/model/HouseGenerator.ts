@@ -12,8 +12,6 @@ export class HouseGenerator {
     
     const segs = SegmentGenerator.generateSegments(extrude + overhangActual, seed);
 
-
-
     const bodyBuf = BodyGenerator.generateBody(segs, heightBodyActual, extrude);
     const roofBuf = RoofGenerator.generateRoof(segs, heightRoof, extrude + overhangActual, heightBody);
   
