@@ -43,7 +43,8 @@ class TexcoordBlock {
   }
 
   getBoundingBoxDimensions() : [number, number] {
-    let maxWidth = ((this.includeTri ? 2 : 0) * this.extrude + this.offsetLong + this.lenLong + BLOCK_TRI_OFFSET);
+    const max = Math.max(this.offsetLong, this.offsetShort);
+    let maxWidth = ((this.includeTri ? 2 : 0) * this.extrude + max + this.lenLong + BLOCK_TRI_OFFSET);
     const maxHeight = this.texHeight;
 
     return [maxWidth * this.scale, maxHeight * this.scale];
@@ -118,8 +119,8 @@ export class RoofTexcoordGenerator {
     texRight.scale = scaleFactor;
 
     boundLeft = texLeft.getBoundingBoxDimensions();
-    texLeft.setTexOffset(0.025, 0.025);
-    texRight.setTexOffset(0.025, 0.025);
+    texLeft.setTexOffset(0.0125, 0.0125);
+    texRight.setTexOffset(0.0125, 0.0125);
 
     const dataLeft = texLeft.getTexcoordData();
     const dataRight = texRight.getTexcoordData();
