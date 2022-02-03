@@ -20,6 +20,10 @@ export class HouseGenerator {
 
     const bodyBuf = BodyGenerator.generateBody(segs, heightBodyActual, extrude, opts ? opts.texScaleBody : undefined);
     const roofBuf = RoofGenerator.generateRoof(segs, heightRoof, extrude + overhangActual, heightBody, opts ? opts.texScaleRoof : undefined);
+
+    // decals should be *much* easier with the generated path
+
+    // todo: generalise sweep code to make some gutters?
   
     return [bodyBuf, roofBuf];
   }

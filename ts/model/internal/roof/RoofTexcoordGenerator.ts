@@ -1,4 +1,4 @@
-import { vec2 } from "gl-matrix";
+import { vec2, vec3 } from "gl-matrix";
 import { Segment } from "../../../segment/Segment";
 import { RoofPolyData } from "../RoofPolyData";
 
@@ -43,7 +43,8 @@ class TexcoordBlock {
   }
 
   getBoundingBoxDimensions() : [number, number] {
-    let maxWidth = ((this.includeTri ? 2 : 0) * this.extrude + this.offsetLong + this.lenLong + BLOCK_TRI_OFFSET);
+    const max = Math.max(this.offsetLong, this.offsetShort);
+    let maxWidth = ((this.includeTri ? 2 : 0) * this.extrude + max + this.lenLong + BLOCK_TRI_OFFSET);
     const maxHeight = this.texHeight;
 
     return [maxWidth * this.scale, maxHeight * this.scale];
@@ -118,8 +119,8 @@ export class RoofTexcoordGenerator {
     texRight.scale = scaleFactor;
 
     boundLeft = texLeft.getBoundingBoxDimensions();
-    texLeft.setTexOffset(0.025, 0.025);
-    texRight.setTexOffset(0.025, 0.025);
+    texLeft.setTexOffset(0.0125, 0.0125);
+    texRight.setTexOffset(0.0125, 0.0125);
 
     const dataLeft = texLeft.getTexcoordData();
     const dataRight = texRight.getTexcoordData();
@@ -138,6 +139,106 @@ export class RoofTexcoordGenerator {
       if (res.shortEnd !== null) {
         res.shortEnd.push(dataRight[i]);
       }
+    }
+
+    return res;
+  }
+
+  static generateRoofTexcoordsFromCurve(points: Array<number>, roofPoints: Array<number>, height: number, extrude: number, texScale: number) : Array<Array<number>> {
+    const res : Array<Array<number>> = [];
+    const start = vec3.create();
+    const end = vec3.create();
+    const roofStart = vec3.create();
+    const roofEnd = vec3.create();
+    const temp = vec3.create();
+
+    const tan = vec3.create();
+    const bitan = vec3.create();
+
+    for (let i = 0; i < points.length; i += 2) {
+      const data : Array<number> = [];
+      const indStart = i;
+      const indEnd = (i + 2) % points.length;
+
+      start[0] = points[indStart];
+      start[2] = points[indStart + 1];
+      end[0]   = points[indEnd];
+      end[2]   = points[indEnd + 1];
+
+      roofStart[0] = roofPoints[indStart];
+      roofStart[1] = height;
+      roofStart[2] = roofPoints[indStart + 1];
+
+      roofEnd[0] = roofPoints[indEnd];
+      roofEnd[1] = height;
+      roofEnd[2] = roofPoints[indEnd + 1];
+
+      // calculate tangent
+      vec3.sub(tan, end, start);
+      vec3.normalize(tan, tan);
+
+      // placeholder bitangent
+      vec3.sub(bitan, start, roofStart);
+      vec3.normalize(bitan, bitan);
+
+      // project onto tangent and sub
+      vec3.scale(temp, tan, vec3.dot(tan, bitan));
+      vec3.sub(bitan, bitan, temp);
+      vec3.normalize(bitan, bitan);
+
+      const minMaxTan = [999999999, -999999999];
+      const minMaxBitan = [99999999, -999999999];
+
+      for (let point of [end, start, roofStart, roofEnd]) {
+        // project x onto tangent
+        // project y onto bitangent
+        // store in arr
+        const tanCoord = vec3.dot(tan, vec3.sub(temp, point, start));
+        const bitanCoord = vec3.dot(bitan, vec3.sub(temp, point, start));
+        data.push(tanCoord, bitanCoord);
+        minMaxTan[0] = Math.min(tanCoord, minMaxTan[0]);
+        minMaxTan[1] = Math.max(tanCoord, minMaxTan[1]);
+        minMaxBitan[0] = Math.min(bitanCoord, minMaxBitan[0]);
+        minMaxBitan[1] = Math.max(bitanCoord, minMaxBitan[1]);
+      }
+
+      for (let i = 0; i < 4; i++) {
+        const off = 2 * i;
+        data[off] -= minMaxTan[0];
+        data[off] *= texScale;
+        data[off] += 0.0125
+
+        data[off + 1] -= minMaxBitan[0];
+        data[off + 1] *= texScale;
+        data[off + 1] += 0.0125;
+      }
+
+      res.push(data);
+    }
+
+    // sides: share y data for both points
+    for (let i = 0; i < points.length; i += 2) {
+      const data : Array<number> = [];
+      // copy from corner pieces
+      const resOld = res[Math.round(i / 2)];
+      data.push(resOld[0], resOld[1]);
+      data.push(resOld[2], resOld[3]);
+      data.push(resOld[2], resOld[3]);
+      data.push(resOld[0], resOld[1]);
+      res.push(data);
+    }
+
+    // bottom: tough
+    // fuck it lets just reuse it
+    // there's little reason to look and tiles dont make sense under there anyway
+    for (let i = 0; i < points.length; i += 2) {
+      const data : Array<number> = [];
+      const resOld = res[Math.round(i / 2)];
+      data.push(resOld[2], resOld[3]);
+      data.push(resOld[0], resOld[1]);
+      data.push(resOld[6], resOld[7]);
+      data.push(resOld[4], resOld[5]);
+      res.push(data);
     }
 
     return res;

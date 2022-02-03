@@ -22,4 +22,31 @@ export class BodyTangentGenerator {
 
     return res;
   }
+
+  static generateBodyTangentsFromCurve(points: Array<number>) {
+    const res : Array<number> = [];
+    const start = vec3.create();
+    const end = vec3.create();
+    const temp = vec3.create();
+
+    for (let i = 0; i < points.length; i += 2) {
+      const indStart = i;
+      const indEnd = (i + 2) % points.length;
+
+      start[0] = points[indStart];
+      start[2] = points[indStart + 1];
+      end[0]   = points[indEnd];
+      end[2]   = points[indEnd + 1];
+
+      vec3.sub(temp, end, start);
+      vec3.normalize(temp, temp);
+
+      res.push(...temp);
+      res.push(...temp);
+      res.push(...temp);
+      res.push(...temp);
+    }
+
+    return res;
+  }
 }

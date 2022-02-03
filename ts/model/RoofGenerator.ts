@@ -6,6 +6,7 @@ import { RoofTangentGenerator } from "./internal/roof/RoofTangentGenerator";
 import { RoofTexcoordGenerator } from "./internal/roof/RoofTexcoordGenerator";
 import { ReadWriteBuffer } from "nekogirl-valhalla/buffer/ReadWriteBuffer";
 import { HouseBufferData } from "./internal/HouseBufferData";
+import { RoofSegmentedCurveBuilder } from "../curve/RoofSegmentedCurveBuilder";
 
 const PROPERTY_LIST = ["longMinus", "longPlus", "shortEnd", "shortStart"];
 
@@ -42,80 +43,75 @@ export class RoofGenerator {
       scale = texScale;
     }
 
-    for (let segment of segmentList) {
-      const positions = RoofPositionGenerator.generateRoofPositions(segment, height, extrude);
-      const normals = RoofNormalGenerator.generateRoofNormals(segment, height, extrude);
-      const texcoords = RoofTexcoordGenerator.generateRoofTexcoords(segment, height, extrude, scale);
-      const tangents = RoofTangentGenerator.generateRoofTangents(segment, height, extrude);
+    const curve = RoofSegmentedCurveBuilder.getSegmentList(segmentList, extrude);
 
-      for (let property of PROPERTY_LIST) {
-        const posData = positions[property] as Array<number>;
-        const normData = normals[property] as Array<number>;
-        const texcoordData = texcoords[property] as Array<number>;
-        const tangentData = tangents[property] as Array<number>;
-        if (posData === null || normData === null || texcoordData === null || tangentData === null) {
-          // oops lol
-          continue;
+    const positions = RoofPositionGenerator.generateRoofPositionsFromCurve(curve.points, curve.roofPoints, height, yOffset);
+    const normals = RoofNormalGenerator.generateRoofNormalsFromCurve(curve.points, curve.roofPoints, height);
+    const tangents = RoofTangentGenerator.generateRoofTangentsFromCurve(curve.points);
+    const texcoords = RoofTexcoordGenerator.generateRoofTexcoordsFromCurve(curve.points, curve.roofPoints, height, extrude, texScale);
+
+    const faces = Math.round(positions.length);
+
+    let vertexCount = 0;
+
+    for (let k = 0; k < faces; k++) {
+      const pos = positions[k];
+      const norm = normals[k];
+      const tan = tangents[k];
+      const tex = texcoords[k];
+
+      const vertices = Math.round(pos.length / 3);
+
+      for (let i = 0; i < vertices; i++) {
+        for (let j = 0; j < 3; j++) {
+          res.setFloat32(offset, pos[3 * i + j], true);
+          offset += 4;
         }
 
-        for (let i = 0; i < Math.floor(posData.length / 3); i++) {
-          for (let j = 0; j < 3; j++) {
-            // todo: a bit hacky
-            res.setFloat32(offset, posData[3 * i + j] + (j === 1 ? yOffset : 0), true);
-            offset += 4; 
-          }
-
-          for (let j = 0; j < 3; j++) {
-            res.setFloat32(offset, normData[j], true);
-            offset += 4;
-          }
-
-          for (let j = 0; j < 2; j++) {
-            res.setFloat32(offset, texcoordData[2 * i + j], true);
-            offset += 4;
-          }
-
-          for (let j = 0; j < 3; j++) {
-            res.setFloat32(offset, tangentData[j], true);
-            offset += 4;
-          }
+        for (let j = 0; j < 3; j++) {
+          res.setFloat32(offset, norm[j], true);
+          offset += 4;
         }
 
-        // encode indices
-        // 012
-        // if quad: 230
-        resIndex.setUint16(indexOffset, index, true);
-        indexOffset += 2;
-
-        resIndex.setUint16(indexOffset, index + 1, true);
-        indexOffset += 2;
-
-        resIndex.setUint16(indexOffset, index + 2, true);
-        indexOffset += 2;
-
-        
-        if (posData.length > 9) {
-          // quad
-          resIndex.setUint16(indexOffset, index + 2, true);
-          indexOffset += 2;
-
-          resIndex.setUint16(indexOffset, index + 3, true);
-          indexOffset += 2;
-
-          resIndex.setUint16(indexOffset, index, true);
-          indexOffset += 2;
-        
-          index++;
+        for (let j = 0; j < 2; j++) {
+          res.setFloat32(offset, tex[2 * i + j], true);
+          offset += 4;
         }
 
-        index += 3;
+        for (let j = 0; j < 3; j++) {
+          res.setFloat32(offset, tan[j], true);
+          offset += 4;
+        }
       }
+
+      resIndex.setUint16(indexOffset, vertexCount, true);
+      indexOffset += 2;
+
+      resIndex.setUint16(indexOffset, vertexCount + 1, true);
+      indexOffset += 2;
+
+      resIndex.setUint16(indexOffset, vertexCount + 2, true);
+      indexOffset += 2;
+
+      if (vertices > 3) {
+        resIndex.setUint16(indexOffset, vertexCount + 2, true);
+        indexOffset += 2;
+
+        resIndex.setUint16(indexOffset, vertexCount + 3, true);
+        indexOffset += 2;
+
+        resIndex.setUint16(indexOffset, vertexCount, true);
+        indexOffset += 2;
+      }
+
+      vertexCount += vertices;
     }
+
     const dataRes = new HouseBufferData();
     dataRes.geometry = res;
     dataRes.index = resIndex;
 
-    dataRes.vertices = Math.round(offset / 44);
+    dataRes.vertices = vertexCount;
     dataRes.indices = Math.round(indexOffset / 2);
 
     return dataRes;

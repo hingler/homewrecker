@@ -6,7 +6,7 @@ import { distanceBetweenLines } from "./internal/distanceBetweenLines";
 import { generateDirNorm } from "./internal/generateDirNorm";
 import { RoofGenerator } from "./RoofGenerator";
 
-interface ProceduralSegment extends Segment {
+export interface ProceduralSegment extends Segment {
   // reference to a parent segment's number, or -1
   parent: number;
 }
@@ -100,7 +100,7 @@ export class SegmentGenerator {
   
           const segConflictCheck = segmentList[j];
         
-          if (distanceBetweenLines(segConflictCheck.start, segConflictCheck.end, segChild.start, segChild.end) < extrude) {
+          if (distanceBetweenLines(segConflictCheck.start, segConflictCheck.end, segChild.start, segChild.end) < 2 * extrude) {
             placeSegment = false;
             break;
           }

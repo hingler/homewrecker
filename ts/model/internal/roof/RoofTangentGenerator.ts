@@ -37,4 +37,43 @@ export class RoofTangentGenerator {
 
     return res;
   }
+
+  static generateRoofTangentsFromCurve(points: Array<number>) : Array<vec3> {
+    const start = vec3.create();
+    const end = vec3.create();
+    const temp = vec3.create();
+
+    const res = [] as Array<vec3>;
+
+    for (let i = 0; i < points.length; i += 2) {
+      const indStart = i;
+      const indEnd = (i + 2) % points.length;
+
+      start[0] = points[indStart];
+      start[2] = points[indStart + 1];
+      end[0]   = points[indEnd];
+      end[2]   = points[indEnd + 1];
+
+      vec3.sub(temp, end, start);
+      vec3.normalize(temp, temp);
+      res.push([...temp] as vec3);
+    }
+
+    // sides after tops
+    for (let i = 0; i < points.length; i += 2) {
+      const ind = Math.round(i / 2);
+      vec3.copy(temp, res[ind]);
+      res.push([...temp] as vec3);
+    }
+
+    // bottoms after sides
+    for (let i = 0; i < points.length; i += 2) {
+      const ind = Math.round(i / 2);
+      vec3.copy(temp, res[ind]);
+      vec3.scale(temp, temp, -1);
+      res.push([...temp] as vec3);
+    }
+
+    return res;
+  }
 }
