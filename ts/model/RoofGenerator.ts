@@ -25,7 +25,7 @@ export class RoofGenerator {
    *          index data:
    *            unsigned short components.
    */
-  static generateRoof(segmentList: Array<Segment>, height: number, extrude: number, yOffset: number) {
+  static generateRoof(segmentList: Array<Segment>, height: number, extrude: number, yOffset: number, texScale?: number) {
     // todo: add depth param
     const res = new ReadWriteBuffer();
     const resIndex = new ReadWriteBuffer();
@@ -33,10 +33,19 @@ export class RoofGenerator {
     let index = 0;
     let indexOffset = 0;
 
+    let scale = 999999999;
+    if (texScale === undefined) {
+      for (let segment of segmentList) {
+        scale = Math.min(scale, RoofTexcoordGenerator.getTexScale(segment, height, extrude));
+      }
+    } else {
+      scale = texScale;
+    }
+
     for (let segment of segmentList) {
       const positions = RoofPositionGenerator.generateRoofPositions(segment, height, extrude);
       const normals = RoofNormalGenerator.generateRoofNormals(segment, height, extrude);
-      const texcoords = RoofTexcoordGenerator.generateRoofTexcoords(segment, height, extrude);
+      const texcoords = RoofTexcoordGenerator.generateRoofTexcoords(segment, height, extrude, scale);
       const tangents = RoofTangentGenerator.generateRoofTangents(segment, height, extrude);
 
       for (let property of PROPERTY_LIST) {

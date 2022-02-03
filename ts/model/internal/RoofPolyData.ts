@@ -4,3 +4,7 @@ export interface RoofPolyData {
   shortEnd: Array<number> | null,
   shortStart: Array<number> | null
 }
+
+export interface RoofPolyTexData extends RoofPolyData {
+  scale: number;
+}

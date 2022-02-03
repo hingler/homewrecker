@@ -8,7 +8,7 @@ import { BodyTexcoordGenerator } from "./internal/body/BodyTexcoordGenerator";
 import { HouseBufferData } from "./internal/HouseBufferData";
 
 export class BodyGenerator {
-  static generateBody(segmentList: Array<Segment>, height: number, extrude: number) {
+  static generateBody(segmentList: Array<Segment>, height: number, extrude: number, texScale?: number) {
     // positions: very easy
     //  it's a cube with no top and no bottom, we need to specify each face
     // tangents: very easy
@@ -29,10 +29,17 @@ export class BodyGenerator {
 
     let vertCount = 0;
 
+    let scale = (texScale !== undefined ? texScale : 999999999);
+    if (texScale === undefined) {
+      for (let segment of segmentList) {
+        scale = Math.min(scale, BodyTexcoordGenerator.getTexScale(segment, height, extrude));
+      }
+    }
+
     for (let segment of segmentList) {
       const positions = BodyPositionGenerator.generateBodyPositions(segment, height, extrude);
       const normals = BodyNormalGenerator.generateBodyNormals(segment, height, extrude);
-      const texcoords = BodyTexcoordGenerator.generateBodyTexcoords(segment, height, extrude);
+      const texcoords = BodyTexcoordGenerator.generateBodyTexcoords(segment, height, extrude, scale);
       const tangents = BodyTangentGenerator.generateBodyTangents(segment);
 
       for (let i = 0; i < 16; i++) {
