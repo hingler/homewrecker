@@ -100,7 +100,7 @@ export class SegmentGenerator {
   
           const segConflictCheck = segmentList[j];
         
-          if (distanceBetweenLines(segConflictCheck.start, segConflictCheck.end, segChild.start, segChild.end) < extrude) {
+          if (distanceBetweenLines(segConflictCheck.start, segConflictCheck.end, segChild.start, segChild.end) < 2 * extrude) {
             placeSegment = false;
             break;
           }

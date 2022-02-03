@@ -17,11 +17,11 @@ export interface RoofSegmentedCurveOutput {
 }
 
 export class RoofSegmentedCurveBuilder {
-  static getSegmentList(segList: Array<ProceduralSegment>, extrude: number) {
+  static getSegmentList(segList: Array<Segment>, extrude: number) {
     const pointList: Array<number> = [];
     const roofPointList: Array<number> = [];
 
-    this.parseSegment_recurse(0, segList, pointList, roofPointList, extrude, true);
+    this.parseSegment_recurse(0, segList, pointList, roofPointList, extrude, new Set(), true);
 
     return {
       points: pointList,
@@ -29,8 +29,9 @@ export class RoofSegmentedCurveBuilder {
     } as RoofSegmentedCurveOutput;
   }
   
-  private static parseSegment_recurse(curIndex: number, segList: Array<ProceduralSegment>, pointList: Array<number>, roofPointList: Array<number>, extrude: number, isRoot: boolean) {
+  private static parseSegment_recurse(curIndex: number, segList: Array<Segment>, pointList: Array<number>, roofPointList: Array<number>, extrude: number, visited: Set<number>, isRoot: boolean) {
     // push a list of points, starting from bottom left
+    visited.add(curIndex);
     const seg = segList[curIndex];
 
     const start = vec2.create();
@@ -53,14 +54,14 @@ export class RoofSegmentedCurveBuilder {
       end[1] = points[2 * ((i + 1) % 4) + 1];
 
       for (let j = 0; j < segList.length; j++) {
-        if (j === curIndex || j === seg.parent) {
+        if (j === curIndex || visited.has(j)) {
           continue;
         }
 
         const curSeg = segList[j];
 
         // note: what if multiple segments intersect?
-        if (distanceBetweenLines(start, end, curSeg.start, curSeg.end) < 0.00001 && curSeg.parent === curIndex) {
+        if (distanceBetweenLines(start, end, curSeg.start, curSeg.end) < 0.00001) {
           // intersection!
           console.log("PUSHING " + j);
           segVisits.push(j);
@@ -81,7 +82,7 @@ export class RoofSegmentedCurveBuilder {
       for (let j = 0; j < segVisits.length; j++) {
         // visit segs by distance from ctrl
         // post first point before doing anything!
-        this.parseSegment_recurse(segVisits[j], segList, pointList, roofPointList, extrude, false);
+        this.parseSegment_recurse(segVisits[j], segList, pointList, roofPointList, extrude, visited, false);
       }
 
       console.log(end);
@@ -120,26 +121,26 @@ export class RoofSegmentedCurveBuilder {
 
     vec2.copy(temp, seg.start);
     vec2.add(temp, temp, tempDir);
-    vec2.add(temp, temp, normV2);
-
-    res.push(...temp);
-    roofPoints.push(seg.start[0], seg.start[1]);
-
-    vec2.copy(temp, seg.end);
-    vec2.scaleAndAdd(temp, temp, dirV2, extrude);
-    vec2.add(temp, temp, normV2);
-    res.push(...temp);
-    roofPoints.push(seg.end[0], seg.end[1]);
-
-    vec2.scaleAndAdd(temp, temp, normV2, -2);
-    res.push(...temp);
-    roofPoints.push(seg.end[0], seg.end[1]);
-
-    vec2.copy(temp, seg.start);
-    vec2.add(temp, temp, tempDir);
     vec2.sub(temp, temp, normV2);
     res.push(...temp);
     roofPoints.push(seg.start[0], seg.start[1]);
+    
+    vec2.copy(temp, seg.end);
+    vec2.scaleAndAdd(temp, temp, dirV2, extrude);
+    vec2.sub(temp, temp, normV2);
+    res.push(...temp);
+    roofPoints.push(seg.end[0], seg.end[1]);
+    
+    vec2.scaleAndAdd(temp, temp, normV2, 2);
+    res.push(...temp);
+    roofPoints.push(seg.end[0], seg.end[1]);
+    
+    vec2.copy(temp, seg.start);
+    vec2.add(temp, temp, tempDir);
+    vec2.add(temp, temp, normV2);
+    res.push(...temp);
+    roofPoints.push(seg.start[0], seg.start[1]);
+    
     return [res, roofPoints];
   }
 
