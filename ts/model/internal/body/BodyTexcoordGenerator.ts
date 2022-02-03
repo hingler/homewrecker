@@ -62,10 +62,10 @@ export class BodyTexcoordGenerator {
 
     for (let i = 0; i < 4; i++) {
       const box = (i & 1 ? boxThin : boxWide);
-      res.push(box[0], box[3]);
       res.push(box[0], box[1]);
-      res.push(box[2], box[1]);
+      res.push(box[0], box[3]);
       res.push(box[2], box[3]);
+      res.push(box[2], box[1]);
     }
 
     return res;

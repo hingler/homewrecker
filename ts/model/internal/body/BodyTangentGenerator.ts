@@ -11,7 +11,7 @@ export class BodyTangentGenerator {
 
     for (let i = 0; i < 4; i++) {
       const tangentVec = (i & 1 ? norm : dir);
-      let scaleTangent = (i & 2 ? -1 : 1);
+      let scaleTangent = (i & 2 ? 1 : -1);
 
       vec3.scale(temp3, tangentVec, scaleTangent);
       res.push(...temp3);
