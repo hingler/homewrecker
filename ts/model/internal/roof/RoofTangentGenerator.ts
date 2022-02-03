@@ -59,6 +59,21 @@ export class RoofTangentGenerator {
       res.push([...temp] as vec3);
     }
 
+    // sides after tops
+    for (let i = 0; i < points.length; i += 2) {
+      const ind = Math.round(i / 2);
+      vec3.copy(temp, res[ind]);
+      res.push([...temp] as vec3);
+    }
+
+    // bottoms after sides
+    for (let i = 0; i < points.length; i += 2) {
+      const ind = Math.round(i / 2);
+      vec3.copy(temp, res[ind]);
+      vec3.scale(temp, temp, -1);
+      res.push([...temp] as vec3);
+    }
+
     return res;
   }
 }

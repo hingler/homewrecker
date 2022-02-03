@@ -136,6 +136,69 @@ export class RoofPositionGenerator {
       res.push(data);
     }
 
+    // all sides after all tops
+
+    for (let i = 0; i < points.length; i += 2) {
+      const indStart = i;
+      const indEnd = (i + 2) % points.length;
+
+      start[0] = points[indStart];
+      start[2] = points[indStart + 1];
+      end[0]   = points[indEnd];
+      end[2]   = points[indEnd + 1];
+
+      const data = [] as Array<number>;
+
+      end[1] = yOffset - 0.05;
+      data.push(...end);
+
+      start[1] = yOffset - 0.05;
+      data.push(...start);
+
+      start[1] = yOffset;
+      data.push(...start);
+
+      end[1] = yOffset;
+      data.push(...end);
+      res.push(data);
+    }
+
+    // all bottoms after all sides
+    for (let i = 0; i < points.length; i += 2) {
+      const indStart = i;
+      const indEnd = (i + 2) % points.length;
+
+      start[0] = points[indStart];
+      start[2] = points[indStart + 1];
+      end[0]   = points[indEnd];
+      end[2]   = points[indEnd + 1];
+
+      start[1] = yOffset - 0.05;
+      end[1] = yOffset - 0.05;
+
+      roofStart[0] = roofPoints[indStart];
+      roofStart[1] = height + yOffset - 0.05;
+      roofStart[2] = roofPoints[indStart + 1];
+
+      roofEnd[0] = roofPoints[indEnd];
+      roofEnd[1] = height + yOffset - 0.05;
+      roofEnd[2] = roofPoints[indEnd + 1];
+
+      const data = [] as Array<number>
+
+      data.push(...start);
+      data.push(...end);
+      data.push(...roofEnd);
+      
+      vec3.sub(temp, roofEnd, roofStart);
+      if (vec3.len(temp) > 0.001) {
+        // non-tri
+        data.push(...roofStart);
+      }
+
+      res.push(data);
+    }
+
     return res;
   }
 }

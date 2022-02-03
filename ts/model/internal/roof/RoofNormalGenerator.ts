@@ -96,6 +96,31 @@ export class RoofNormalGenerator {
       
       res.push([...temp] as vec3);
     }
+
+    // sides after tops
+    for (let i = 0; i < points.length; i += 2) {
+      const indStart = i;
+      const indEnd = (i + 2) % points.length;
+
+      start[0] = points[indStart];
+      start[2] = points[indStart + 1];
+      end[0]   = points[indEnd];
+      end[2]   = points[indEnd + 1];
+
+      vec3.sub(temp, end, start);
+      vec3.normalize(temp, temp);
+
+      vec3.cross(temp, [0, 1, 0], temp);
+
+      res.push([...temp] as vec3);
+    }
+
+    // bottoms after sides
+    for (let i = 0; i < points.length; i += 2) {
+      vec3.copy(temp, res[Math.round(i / 2)]);
+      vec3.scale(temp, temp, -1);
+      res.push([...temp] as vec3);
+    }
     
     return res;
   }
