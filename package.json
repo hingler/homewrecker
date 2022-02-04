@@ -21,7 +21,7 @@
   "homepage": "https://github.com/jamieboy1337/homewrecker#readme",
   "dependencies": {
     "gl-matrix": "^3.4.3",
-    "nekogirl-valhalla": "github:jamieboy1337/nekogirl-valhalla"
+    "nekogirl-valhalla": "github:jamieboy1337/nekogirl-valhalla#ibnar6"
   },
   "devDependencies": {
     "@types/chai": "^4.3.0",
