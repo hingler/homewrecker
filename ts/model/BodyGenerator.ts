@@ -46,7 +46,6 @@ export class BodyGenerator {
     const texcoords = BodyTexcoordGenerator.generateBodyTexcoordsFromCurve(curve.points, height, texScale);
 
     const vertices = Math.round(positions.length / 3);
-    console.log("VERTICES: " + vertices);
 
     for (let i = 0; i < vertices; i++) {
       for (let j = 0; j < 3; j++) {

@@ -42,7 +42,6 @@ export class RoofSegmentedCurveBuilder {
     const segVisits : Array<number> = [];
 
     const temp = vec2.create();
-    console.log(points);
 
     pointList.push(points[0], points[1]);
     roofPointList.push(roots[0], roots[1]);
@@ -63,7 +62,6 @@ export class RoofSegmentedCurveBuilder {
         // note: what if multiple segments intersect?
         if (distanceBetweenLines(start, end, curSeg.start, curSeg.end) < 0.00001) {
           // intersection!
-          console.log("PUSHING " + j);
           segVisits.push(j);
         }
       }
@@ -76,16 +74,12 @@ export class RoofSegmentedCurveBuilder {
         return distA - distB;
       });
 
-      console.log("SEGVISITS");
-      console.log(segVisits);
-
       for (let j = 0; j < segVisits.length; j++) {
         // visit segs by distance from ctrl
         // post first point before doing anything!
         this.parseSegment_recurse(segVisits[j], segList, pointList, roofPointList, extrude, visited, false);
       }
 
-      console.log(end);
       pointList.push(...end);
       roofPointList.push(roots[2 * ((i + 1) % 4)], roots[2 * ((i + 1) % 4) + 1]);
 
@@ -110,7 +104,6 @@ export class RoofSegmentedCurveBuilder {
     const dirV2 = [dir[0], dir[2]] as vec2;
     const normV2 = [norm[0], norm[2]] as vec2;
 
-    console.log(normV2);
     // idk when along the line my normals flipped
     vec2.scale(normV2, normV2, extrude);
     vec2.copy(tempDir, dirV2);
