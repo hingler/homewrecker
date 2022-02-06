@@ -2,6 +2,7 @@ import { ReadonlyVec2, ReadonlyVec3, vec3 } from "gl-matrix";
 import { ReadWriteBuffer } from "nekogirl-valhalla/buffer/ReadWriteBuffer";
 import { RoofSegmentedCurveBuilder } from "../curve/RoofSegmentedCurveBuilder";
 import { Segment } from "../segment/Segment";
+import { HouseBuffer, HouseOptions } from "./HouseGenerator";
 import { BodyNormalGenerator } from "./internal/body/BodyNormalGenerator";
 import { BodyPositionGenerator } from "./internal/body/BodyPositionGenerator";
 import { BodyTangentGenerator } from "./internal/body/BodyTangentGenerator";
@@ -10,7 +11,7 @@ import { HouseBufferData } from "./internal/HouseBufferData";
 import { ProceduralSegment } from "./SegmentGenerator";
 
 export class BodyGenerator {
-  static generateBody(segmentList: Array<Segment>, height: number, extrude: number, texScale?: number) {
+  static generateBody(segmentList: Array<Segment>, height: number, extrude: number, opts?: HouseOptions) {
     // positions: very easy
     //  it's a cube with no top and no bottom, we need to specify each face
     // tangents: very easy
@@ -22,14 +23,39 @@ export class BodyGenerator {
     // offset = normal
     // one tangent is always up, the other we define
 
-    const res = new ReadWriteBuffer();
-    const resIndex = new ReadWriteBuffer();
+    const dataRes = new HouseBufferData();
 
+    let res : ReadWriteBuffer = undefined;
+    let resIndex : ReadWriteBuffer = undefined;
     let offset = 0;
-    let index = 0;
     let indexOffset = 0;
+    let texScale : number = opts ? opts.texScaleBody : undefined;
 
-    let vertCount = 0;
+    let vertexCount = 0;
+    let indexCount = 0;
+
+    if (opts) {
+      if (opts.bufferGeom) {
+        res = opts.bufferGeom.buffer;
+        offset = opts.bufferGeom.offset;
+      }
+  
+      if (opts.bufferIndex) {
+        resIndex = opts.bufferIndex.buffer;
+        indexOffset = opts.bufferIndex.offset;
+      }
+    }
+
+    if (!res) {
+      res = new ReadWriteBuffer();
+    }
+
+    if (!resIndex) {
+      resIndex = new ReadWriteBuffer();
+    }
+
+    dataRes.start = offset;
+    dataRes.startIndex = indexOffset;
 
     let scale = (texScale !== undefined ? texScale : 999999999);
     if (texScale === undefined) {
@@ -68,6 +94,8 @@ export class BodyGenerator {
         res.setFloat32(offset, tangents[3 * i + j], true);
         offset += 4;
       }
+
+      vertexCount++;
     }
 
     for (let i = 0; i < vertices; i += 4) {
@@ -88,14 +116,19 @@ export class BodyGenerator {
 
       resIndex.setUint16(indexOffset, i, true);
       indexOffset += 2;
+
+      indexCount += 6;
     }
 
-    const dataRes = new HouseBufferData();
+    
     dataRes.geometry = res;
     dataRes.index = resIndex;
 
-    dataRes.vertices = vertices;
-    dataRes.indices = Math.round(indexOffset / 2);
+    dataRes.vertices = vertexCount;
+    dataRes.indices = indexCount;
+
+    dataRes.offset = offset;
+    dataRes.indexOffset = indexOffset;
 
     return dataRes;
   }

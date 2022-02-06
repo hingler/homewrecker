@@ -91,7 +91,7 @@ export class RoofPositionGenerator {
     return res;
   }
 
-  static generateRoofPositionsFromCurve(points: Array<number>, roofPoints: Array<number>, height: number, yOffset: number) : Array<Array<number>> {
+  static generateRoofPositionsFromCurve(points: Array<number>, roofPoints: Array<number>, height: number, thickness: number, yOffset: number) : Array<Array<number>> {
     const res : Array<Array<number>> = [];
     const start = vec3.create();
     const end = vec3.create();
@@ -149,10 +149,10 @@ export class RoofPositionGenerator {
 
       const data = [] as Array<number>;
 
-      end[1] = yOffset - 0.05;
+      end[1] = yOffset - thickness;
       data.push(...end);
 
-      start[1] = yOffset - 0.05;
+      start[1] = yOffset - thickness;
       data.push(...start);
 
       start[1] = yOffset;

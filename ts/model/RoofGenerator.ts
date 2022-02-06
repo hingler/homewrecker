@@ -7,6 +7,7 @@ import { RoofTexcoordGenerator } from "./internal/roof/RoofTexcoordGenerator";
 import { ReadWriteBuffer } from "nekogirl-valhalla/buffer/ReadWriteBuffer";
 import { HouseBufferData } from "./internal/HouseBufferData";
 import { RoofSegmentedCurveBuilder } from "../curve/RoofSegmentedCurveBuilder";
+import { HouseBuffer, HouseOptions } from "./HouseGenerator";
 
 const PROPERTY_LIST = ["longMinus", "longPlus", "shortEnd", "shortStart"];
 
@@ -26,13 +27,39 @@ export class RoofGenerator {
    *          index data:
    *            unsigned short components.
    */
-  static generateRoof(segmentList: Array<Segment>, height: number, extrude: number, yOffset: number, texScale?: number) {
+  static generateRoof(segmentList: Array<Segment>, height: number, extrude: number, thickness: number, yOffset: number, opts?: HouseOptions) {
     // todo: add depth param
-    const res = new ReadWriteBuffer();
-    const resIndex = new ReadWriteBuffer();
+
+    const dataRes = new HouseBufferData();
+
+    let res : ReadWriteBuffer = undefined;
+    let resIndex : ReadWriteBuffer = undefined;
     let offset = 0;
-    let index = 0;
     let indexOffset = 0;
+    let texScale : number = opts ? opts.texScaleRoof : undefined;
+
+    if (opts) {
+      if (opts.bufferGeom) {
+        res = opts.bufferGeom.buffer;
+        offset = opts.bufferGeom.offset;
+      }
+  
+      if (opts.bufferIndex) {
+        resIndex = opts.bufferIndex.buffer;
+        indexOffset = opts.bufferIndex.offset;
+      }
+    }
+
+    if (!res) {
+      res = new ReadWriteBuffer();
+    }
+
+    if (!resIndex) {
+      resIndex = new ReadWriteBuffer();
+    }
+
+    dataRes.start = offset;
+    dataRes.startIndex = indexOffset;
 
     let scale = 999999999;
     if (texScale === undefined) {
@@ -45,7 +72,7 @@ export class RoofGenerator {
 
     const curve = RoofSegmentedCurveBuilder.getSegmentList(segmentList, extrude);
 
-    const positions = RoofPositionGenerator.generateRoofPositionsFromCurve(curve.points, curve.roofPoints, height, yOffset);
+    const positions = RoofPositionGenerator.generateRoofPositionsFromCurve(curve.points, curve.roofPoints, height, thickness, yOffset);
     const normals = RoofNormalGenerator.generateRoofNormalsFromCurve(curve.points, curve.roofPoints, height);
     const tangents = RoofTangentGenerator.generateRoofTangentsFromCurve(curve.points);
     const texcoords = RoofTexcoordGenerator.generateRoofTexcoordsFromCurve(curve.points, curve.roofPoints, height, extrude, texScale);
@@ -53,6 +80,7 @@ export class RoofGenerator {
     const faces = Math.round(positions.length);
 
     let vertexCount = 0;
+    let indexCount = 0;
 
     for (let k = 0; k < faces; k++) {
       const pos = positions[k];
@@ -93,6 +121,8 @@ export class RoofGenerator {
       resIndex.setUint16(indexOffset, vertexCount + 2, true);
       indexOffset += 2;
 
+      indexCount += 3;
+
       if (vertices > 3) {
         resIndex.setUint16(indexOffset, vertexCount + 2, true);
         indexOffset += 2;
@@ -102,17 +132,20 @@ export class RoofGenerator {
 
         resIndex.setUint16(indexOffset, vertexCount, true);
         indexOffset += 2;
+        indexCount += 3;
       }
 
       vertexCount += vertices;
     }
 
-    const dataRes = new HouseBufferData();
     dataRes.geometry = res;
     dataRes.index = resIndex;
 
     dataRes.vertices = vertexCount;
-    dataRes.indices = Math.round(indexOffset / 2);
+    dataRes.indices = indexCount;
+
+    dataRes.offset = offset;
+    dataRes.indexOffset = indexOffset;
 
     return dataRes;
   }

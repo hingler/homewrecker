@@ -3,12 +3,22 @@ import { ReadWriteBuffer } from "nekogirl-valhalla/buffer/ReadWriteBuffer";
 export class HouseBufferData {
   geometry: ReadWriteBuffer;
   index: ReadWriteBuffer;
+  
+  // old offsets
+  start: number;
+  startIndex: number;
+
+  // new offsets
+  offset: number;
+  indexOffset: number;
 
   // number of vertices
   vertices: number;
 
   // number of indices
   indices: number;
+
+
 
   readonly POSITION_OFFSET = 0;
   readonly POSITION_COMPONENTS = 3;
