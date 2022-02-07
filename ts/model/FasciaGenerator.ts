@@ -1,7 +1,7 @@
 import { vec3 } from "gl-matrix";
 import { ReadWriteBuffer } from "nekogirl-valhalla/buffer/ReadWriteBuffer";
-import { RoofSegmentedCurveBuilder } from "../../curve/RoofSegmentedCurveBuilder";
-import { Segment } from "../../segment/Segment";
+import { RoofSegmentedCurveBuilder } from "../curve/RoofSegmentedCurveBuilder";
+import { Segment } from "../segment/Segment";
 import { HouseOptions } from "./HouseGenerator";
 import { HouseBufferData } from "./internal/HouseBufferData";
 
