@@ -94,6 +94,13 @@ export class HouseGenerator {
 
     fasciaModelSpec.setIndex(fasciaBuf.index, DataType.UNSIGNED_SHORT, fasciaBuf.indices, fasciaBuf.startIndex);
 
+    if (opts && opts.bufferGeom) {
+      opts.bufferGeom.offset = fasciaBuf.offset;
+    }
+
+    if (opts && opts.bufferIndex) {
+      opts.bufferIndex.offset = fasciaBuf.indexOffset;
+    }
     // decals should be *much* easier with the generated path
 
     // todo: generalise sweep code to make some gutters?
