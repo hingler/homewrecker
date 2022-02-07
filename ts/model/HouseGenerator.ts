@@ -5,6 +5,7 @@ import { GLModelSpec } from "nekogirl-valhalla/model/GLModelSpec";
 import { AttributeType } from "nekogirl-valhalla/model/AttributeType";
 import { DataType } from "nekogirl-valhalla/model/DataType";
 import { ReadWriteBuffer } from "nekogirl-valhalla/buffer/ReadWriteBuffer";
+import { FasciaGenerator } from "./FasciaGenerator";
 
 export interface HouseOptions {
   seed?: number,
@@ -73,10 +74,30 @@ export class HouseGenerator {
 
     roofModelSpec.setIndex(roofBuf.index, DataType.UNSIGNED_SHORT, roofBuf.indices, roofBuf.startIndex);
 
+
+    const fasciaBuf = FasciaGenerator.generateFascia(segs, extrude + overhangActual, heightBody, opts);
+
+    if (opts && opts.bufferGeom) {
+      opts.bufferGeom.offset = roofBuf.offset;
+    }
+
+    if (opts && opts.bufferIndex) {
+      opts.bufferIndex.offset = roofBuf.indexOffset;
+    }
+
+    const fasciaModelSpec = new GLModelSpec();
+
+    fasciaModelSpec.setAttribute(fasciaBuf.geometry, AttributeType.POSITION, fasciaBuf.POSITION_COMPONENTS, DataType.FLOAT, fasciaBuf.vertices, fasciaBuf.POSITION_OFFSET + fasciaBuf.start, fasciaBuf.BYTE_STRIDE);
+    fasciaModelSpec.setAttribute(fasciaBuf.geometry, AttributeType.NORMAL, fasciaBuf.NORMAL_COMPONENTS, DataType.FLOAT, fasciaBuf.vertices, fasciaBuf.NORMAL_OFFSET + fasciaBuf.start, fasciaBuf.BYTE_STRIDE);
+    fasciaModelSpec.setAttribute(fasciaBuf.geometry, AttributeType.TEXCOORD, fasciaBuf.TEXCOORD_COMPONENTS, DataType.FLOAT, fasciaBuf.vertices, fasciaBuf.TEXCOORD_OFFSET + fasciaBuf.start, fasciaBuf.BYTE_STRIDE);
+    fasciaModelSpec.setAttribute(fasciaBuf.geometry, AttributeType.TANGENT, fasciaBuf.TANGENT_COMPONENTS, DataType.FLOAT, fasciaBuf.vertices, fasciaBuf.TANGENT_OFFSET + fasciaBuf.start, fasciaBuf.BYTE_STRIDE);
+
+    fasciaModelSpec.setIndex(fasciaBuf.index, DataType.UNSIGNED_SHORT, fasciaBuf.indices, fasciaBuf.startIndex);
+
     // decals should be *much* easier with the generated path
 
     // todo: generalise sweep code to make some gutters?
   
-    return [bodyModelSpec, roofModelSpec];
+    return [bodyModelSpec, roofModelSpec, fasciaModelSpec];
   }
 }

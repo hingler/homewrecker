@@ -216,18 +216,6 @@ export class RoofTexcoordGenerator {
       res.push(data);
     }
 
-    // sides: share y data for both points
-    for (let i = 0; i < points.length; i += 2) {
-      const data : Array<number> = [];
-      // copy from corner pieces
-      const resOld = res[Math.round(i / 2)];
-      data.push(resOld[0], resOld[1]);
-      data.push(resOld[2], resOld[3]);
-      data.push(resOld[2], resOld[3]);
-      data.push(resOld[0], resOld[1]);
-      res.push(data);
-    }
-
     // bottom: tough
     // fuck it lets just reuse it
     // there's little reason to look and tiles dont make sense under there anyway

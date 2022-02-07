@@ -136,33 +136,6 @@ export class RoofPositionGenerator {
       res.push(data);
     }
 
-    // all sides after all tops
-
-    for (let i = 0; i < points.length; i += 2) {
-      const indStart = i;
-      const indEnd = (i + 2) % points.length;
-
-      start[0] = points[indStart];
-      start[2] = points[indStart + 1];
-      end[0]   = points[indEnd];
-      end[2]   = points[indEnd + 1];
-
-      const data = [] as Array<number>;
-
-      end[1] = yOffset - thickness;
-      data.push(...end);
-
-      start[1] = yOffset - thickness;
-      data.push(...start);
-
-      start[1] = yOffset;
-      data.push(...start);
-
-      end[1] = yOffset;
-      data.push(...end);
-      res.push(data);
-    }
-
     // all bottoms after all sides
     for (let i = 0; i < points.length; i += 2) {
       const indStart = i;
