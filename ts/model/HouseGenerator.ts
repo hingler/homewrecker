@@ -6,6 +6,8 @@ import { AttributeType } from "nekogirl-valhalla/model/AttributeType";
 import { DataType } from "nekogirl-valhalla/model/DataType";
 import { ReadWriteBuffer } from "nekogirl-valhalla/buffer/ReadWriteBuffer";
 import { FasciaGenerator } from "./FasciaGenerator";
+import { DecalGenerator } from "./DecalGenerator";
+import { DecalObject } from "../decal/DecalObject";
 
 export interface HouseOptions {
   seed?: number,
@@ -24,7 +26,7 @@ export interface HouseBuffer {
 }
 
 export class HouseGenerator {
-  static generateHouse(heightBody: number, heightRoof: number, extrude: number, overhang: number, opts?: HouseOptions) {
+  static generateHouse(heightBody: number, heightRoof: number, extrude: number, overhang: number, opts?: HouseOptions) : [GLModelSpec, GLModelSpec, GLModelSpec, DecalObject] {
     const overhangActual = Math.max(overhang, 0.0);
 
     const tOverhang = overhangActual / (extrude + overhangActual);
@@ -103,8 +105,10 @@ export class HouseGenerator {
     }
     // decals should be *much* easier with the generated path
 
+    const decals = DecalGenerator.generateDecals(segs, heightBody, extrude);
+
     // todo: generalise sweep code to make some gutters?
   
-    return [bodyModelSpec, roofModelSpec, fasciaModelSpec];
+    return [bodyModelSpec, roofModelSpec, fasciaModelSpec, decals];
   }
 }
