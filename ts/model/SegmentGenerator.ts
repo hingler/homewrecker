@@ -83,7 +83,8 @@ export class SegmentGenerator {
         // norm2 is in one of the orthogonal directions
         vec2.scale(norm2, norm2, flip);      
         
-        const childLength = 3.5 + xorshift32_float() * 4.5;
+        
+        const childLength = Math.max(3.5, extrude + 0.5) + xorshift32_float() * 4.5;
         vec2.scale(norm2, norm2, childLength);
         const segChild : ProceduralSegment = {
           start: startPoint,
