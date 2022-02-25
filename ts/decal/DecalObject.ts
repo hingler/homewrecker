@@ -16,17 +16,23 @@ export class DecalObject implements TransformableNestable<DecalObject> {
   private nesttransform : TransformableNestableComponent<DecalObject>;
 
   readonly type : DecalType;
+  readonly segmentIndex : number;
 
   private dirty: boolean;
 
   private static gen = new IDGenerator();
 
-  constructor(type: DecalType) {
+  constructor(type: DecalType, segmentIndex?: number) {
     this.nest = new NestableComponent(DecalObject.gen.getNewID(), this);
     this.transform = new TransformableBase();
     this.nesttransform = new TransformableNestableComponent(this as DecalObject);
 
     this.type = type;
+    if (segmentIndex === undefined) {
+      this.segmentIndex = -1;
+    } else {
+      this.segmentIndex = segmentIndex;
+    }
   }
 
   getParent() {

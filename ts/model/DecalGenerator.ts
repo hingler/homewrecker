@@ -117,13 +117,13 @@ export class DecalGenerator {
     vec2.scale(doorPos, doorPos, 0.5);
 
     // door
-    const door = new DecalObject(DecalType.DOOR);
+    const door = new DecalObject(DecalType.DOOR, targetSegment[2]);
     door.setPosition(doorPos[0], floorHeight + DOOR_HEIGHT * 0.5, doorPos[1]);
     door.setScale(DOOR_WIDTH, DOOR_HEIGHT, 0.25);
     
     if (stairCount > 0) {
       // platform
-      const platform = new DecalObject(DecalType.PLATFORM);
+      const platform = new DecalObject(DecalType.PLATFORM, targetSegment[2]);
       const platformWidth = DOOR_WIDTH + 0.5 + xorshift32_float() * 0.5;
       const platformLength = DOOR_HEIGHT * (0.4 + 0.4 * xorshift32_float());
       platform.setScale(platformWidth, stairHeight, platformLength);
@@ -132,7 +132,7 @@ export class DecalGenerator {
   
       // stairs
       if (stairCount > 1) {
-        const stairs = new DecalObject(DecalType.STAIRS);
+        const stairs = new DecalObject(DecalType.STAIRS, targetSegment[2]);
         const stairLength = SINGLE_STAIR_LENGTH_METERS * (stairCount - 1);
         stairs.setScale(platformWidth, stairHeight, stairLength);
         stairs.setPosition(doorPos[0], stairHeight / 2, doorPos[1] - platformLength - stairLength / 2);
@@ -159,7 +159,7 @@ export class DecalGenerator {
       const delta = ceilingHeight * i;
 
       for (let window of windowList) {
-        const win = new DecalObject(window.type);
+        const win = new DecalObject(window.type, window.segmentIndex);
         const pos = vec3.copy(vec3.create(), window.getPosition());
         pos[1] += delta;
         win.setPosition(pos);
@@ -212,14 +212,14 @@ export class DecalGenerator {
         console.log(doorSegment);
         console.log(indStart);
         // no windows on door segment (for now :()
-        res.push(...this.generateWindowsOnSegment(start, end, temp, heightWindow, heightCeiling));
+        res.push(...this.generateWindowsOnSegment(start, end, temp, heightWindow, heightCeiling, indStart));
       }
     }
 
     return res;
   }
 
-  private static generateWindowsOnSegment(start: vec2, end: vec2, temp: vec2, heightWindow: number, heightCeiling: number) {
+  private static generateWindowsOnSegment(start: vec2, end: vec2, temp: vec2, heightWindow: number, heightCeiling: number, index: number) {
     vec2.sub(temp, end, start);
 
     const len = vec2.len(temp);
@@ -261,7 +261,7 @@ export class DecalGenerator {
     const res : Array<DecalObject> = [];
 
     for (let i = 0; i < windowCountTarget; i++) {
-      const decal = new DecalObject(winType);
+      const decal = new DecalObject(winType, index);
       decal.setRotationEuler(0, rot, 0);
       decal.setPosition(windowPosCursor[0], heightWindow - winDims[1] / 2, windowPosCursor[1]);
       decal.setScale(winDims[0], winDims[1], 0.25);
