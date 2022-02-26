@@ -30,7 +30,7 @@ export class DecalToModel {
     return output;
   }
 
-  static convert_recurse<T>(root: DecalObject, data: ReadonlyArray<ReadonlyDecalModel<T>>, res: Map<number, ReadonlyDecalModel<T>>) {
+  private static convert_recurse<T>(root: DecalObject, data: ReadonlyArray<ReadonlyDecalModel<T>>, res: Map<number, ReadonlyDecalModel<T>>) {
     const rootScale = root.getScale();
     let bestMatchFactor = 0.0;
     let bestMatchIndex = -1;
@@ -54,7 +54,7 @@ export class DecalToModel {
     }
   }
 
-  static calculateMatchFactor<T>(root: DecalObject, model: DecalModel<T>) {
+  private static calculateMatchFactor<T>(root: DecalObject, model: DecalModel<T>) {
     let factor : number;
     const rootScale = root.getScale();
 
