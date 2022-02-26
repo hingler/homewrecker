@@ -26,7 +26,8 @@ describe("RoofGenerator", function() {
     // should have 14 vertices and 18 indices
     expect(roof.geometry).to.not.be.undefined;
     expect(roof.index).to.not.be.undefined;
-    expect(roof.geometry.size()).to.equal(616); // 44 bytes per vertex * 14 vertices
-    expect(roof.index.size()).to.equal(36); // 6 tris * 3 points * 2 bytes per index
+
+    expect(roof.geometry.size()).to.equal(1232); // 44 bytes per vertex * 28 vertices (14 top, 14 bot)
+    expect(roof.index.size()).to.equal(72); // 6 tris * 3 points * 2 bytes per index * 2 (top, bot)
   });
 });

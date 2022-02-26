@@ -12,16 +12,6 @@ import { ProceduralSegment } from "./SegmentGenerator";
 
 export class BodyGenerator {
   static generateBody(segmentList: Array<Segment>, height: number, extrude: number, opts?: HouseOptions) {
-    // positions: very easy
-    //  it's a cube with no top and no bottom, we need to specify each face
-    // tangents: very easy
-    // normals: very easy
-    // texcoords: a bit less easy
-    // we can use the same texcoords for the short and long faces probably
-
-    // faces have an offset and a tangent
-    // offset = normal
-    // one tangent is always up, the other we define
 
     const dataRes = new HouseBufferData();
 

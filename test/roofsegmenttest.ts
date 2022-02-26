@@ -5,25 +5,25 @@ import { ProceduralSegment } from "../ts/model/SegmentGenerator";
 describe("RoofSegmentedCurveBuilder", function() {
   it("Generates a segment list", function() {
     const POINTS_EXPECTED = [
-      -2, 0,
-      3, 5,
-      -2, 10,
-      0, 12,
-      5, 7,
-      10, 12,
+      0, -2,
       12, 10,
-      0, -2
+      10, 12,
+      5, 7,
+      0, 12,
+      -2, 10,
+      3, 5,
+      -2, 0
     ];
 
     const ROOT_POINTS_EXPECTED = [
       0, 0,
+      10, 10,
+      10, 10,
       5, 5,
       0, 10,
       0, 10,
       5, 5,
-      10, 10,
-      10, 10,
-      0, 0
+      0, 0,
     ];
 
     const seg : ProceduralSegment = {
@@ -43,6 +43,8 @@ describe("RoofSegmentedCurveBuilder", function() {
     };
 
     const { points, roofPoints } = RoofSegmentedCurveBuilder.getSegmentList([ seg, seg2 ], Math.sqrt(2));
+
+    console.log(points);
     
     console.log(points);
     console.log(roofPoints);
