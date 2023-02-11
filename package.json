@@ -7,21 +7,20 @@
     "prepare": "npm run build-ts",
     "build": "tsc -p tsconfig-dev.json",
     "build-ts": "tsc -p tsconfig.json --declaration",
-    "test": "mocha ts-out/homewrecker/test/*"
+    "test": "mocha ts-out/test/*"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jamieboy1337/homewrecker.git"
+    "url": "git+https://github.com/hingler/homewrecker.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jamieboy1337/homewrecker/issues"
+    "url": "https://github.com/hingler/homewrecker/issues"
   },
-  "homepage": "https://github.com/jamieboy1337/homewrecker#readme",
+  "homepage": "https://github.com/hingler/homewrecker#readme",
   "dependencies": {
-    "gl-matrix": "^3.4.3",
-    "nekogirl-valhalla": "github:jamieboy1337/nekogirl-valhalla"
+    "gl-matrix": "^3.4.3"
   },
   "devDependencies": {
     "@types/chai": "^4.3.0",

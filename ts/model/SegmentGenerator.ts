@@ -1,14 +1,21 @@
 import { vec2 } from "gl-matrix";
-import { xorshift32, xorshift32_float, xorshift32_seed } from "nekogirl-valhalla/random/Xorshift32";
 import { Segment } from "../segment/Segment";
-import { BodyGenerator } from "./BodyGenerator";
 import { distanceBetweenLines } from "./internal/distanceBetweenLines";
 import { generateDirNorm } from "./internal/generateDirNorm";
-import { RoofGenerator } from "./RoofGenerator";
 
 export interface ProceduralSegment extends Segment {
   // reference to a parent segment's number, or -1
   parent: number;
+}
+
+function xorshift32() {
+  return 128;
+}
+
+function xorshift32_seed(seed: number) {}
+
+function xorshift32_float() {
+  return 0.45;
 }
 
 const EDGE_BRANCH_PROBABILITY = 0.125;
