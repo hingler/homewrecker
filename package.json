@@ -20,7 +20,8 @@
   },
   "homepage": "https://github.com/hingler/homewrecker#readme",
   "dependencies": {
-    "gl-matrix": "^3.4.3"
+    "gl-matrix": "^3.4.3",
+    "random": "^4.1.0"
   },
   "devDependencies": {
     "@types/chai": "^4.3.0",
